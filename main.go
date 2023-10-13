@@ -76,12 +76,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(fmt.Sprintf(
-		"Mempool size (bytes): %-10d Mempool capacity (bytes): %-10d Transactions: %-10d",
+	fmt.Printf(
+		"Mempool size (bytes): %-10d Mempool capacity (bytes): %-10d Transactions: %-10d\n",
 		size,
 		capacity,
 		numberOfTxs,
-	))
+	)
 	fmt.Println()
 	// Get all transactions
 	fmt.Println("Transactions:\n")
@@ -112,48 +112,48 @@ func main() {
 		}
 		fmt.Println(" ---")
 		// Print Tx size and Tx Hash (of Tx Body)
-		fmt.Println(fmt.Sprintf(
-			" %-20s %d",
+		fmt.Printf(
+			" %-20s %d\n",
 			"Size:",
 			size,
-		))
-		fmt.Println(fmt.Sprintf(
-			" %-20s %s",
+		)
+		fmt.Printf(
+			" %-20s %s\n",
 			"TxHash:",
 			tx.Hash(),
-		))
+		)
 		// Print number of inputs
-		fmt.Println(fmt.Sprintf(
-			" %-20s %d",
+		fmt.Printf(
+			" %-20s %d\n",
 			"Inputs:",
 			len(tx.Inputs()),
-		))
+		)
 		// Loop through transaction inputs and print ID#Index
 		for i, input := range tx.Inputs() {
-			fmt.Println(fmt.Sprintf(
-				" %-20s %s",
+			fmt.Printf(
+				" %-20s %s\n",
 				fmt.Sprintf("Input[%d]:", i),
 				fmt.Sprintf("%s#%d", input.Id().String(), input.Index()),
-			))
+			)
 		}
 		// Print number of outputs
-		fmt.Println(fmt.Sprintf(
-			" %-20s %d",
+		fmt.Printf(
+			" %-20s %d\n",
 			"Outputs:",
 			len(tx.Outputs()),
-		))
+		)
 		// Loop through transaction outputs
 		for o, output := range tx.Outputs() {
-			fmt.Println(fmt.Sprintf(
-				" %-20s %s",
+			fmt.Printf(
+				" %-20s %s\n",
 				fmt.Sprintf("Output[%d]:", o),
 				fmt.Sprintf("Address: %s", output.Address().String()),
-			))
-			fmt.Println(fmt.Sprintf(
-				" %-20s %s",
+			)
+			fmt.Printf(
+				" %-20s %s\n",
 				fmt.Sprintf("Output[%d]:", o),
 				fmt.Sprintf("Amount: %d", output.Amount()),
-			))
+			)
 			if output.Assets() == nil {
 				continue
 			}
@@ -167,8 +167,8 @@ func main() {
 			}
 			// Loop through each asset and display
 			for a, asset := range assets {
-				fmt.Println(fmt.Sprintf(
-					" %-20s %s",
+				fmt.Printf(
+					" %-20s %s\n",
 					fmt.Sprintf("Output[%d]:", o),
 					fmt.Sprintf(
 						"Asset[%d]: Policy: %s, Name: %s, Amount: %d",
@@ -177,7 +177,7 @@ func main() {
 						asset.Name,
 						asset.Amount,
 					),
-				))
+				)
 			}
 
 		}
