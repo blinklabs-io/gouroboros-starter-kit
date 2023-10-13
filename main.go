@@ -15,6 +15,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
 	ouroboros "github.com/blinklabs-io/gouroboros"
@@ -22,11 +23,22 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
+// We parse environment variables using envconfig into this struct
 type Config struct {
 	Magic      uint32
 	SocketPath string `split_words:"true"`
 }
 
+// Create an Asset type using generics since the ledger code does not expose it
+type Asset[T ledger.MultiAssetTypeOutput | ledger.MultiAssetTypeMint] struct {
+	Name        string `json:"name"`
+	NameHex     string `json:"nameHex"`
+	PolicyId    string `json:"policyId"`
+	Fingerprint string `json:"fingerprint"`
+	Amount      T      `json:"amount"`
+}
+
+// This code will be executed when run
 func main() {
 	// Set config defaults
 	var cfg = Config{
@@ -59,7 +71,7 @@ func main() {
 	if err = o.Dial("unix", cfg.SocketPath); err != nil {
 		panic(err)
 	}
-	// Get mempool sizes
+	// Get mempool sizes from Node via LocalTxMonitor Ouroboros mini-protocol
 	capacity, size, numberOfTxs, err := o.LocalTxMonitor().Client.GetSizes()
 	if err != nil {
 		panic(err)
@@ -70,11 +82,14 @@ func main() {
 		capacity,
 		numberOfTxs,
 	))
+	fmt.Println()
 	// Get all transactions
-	fmt.Println("Transactions:")
-	fmt.Println(fmt.Sprintf(" %-20s %s", "Size", "TxHash"))
+	fmt.Println("Transactions:\n")
+	// The Ouroboros LocalTxMonitor mini-protocol allows fetching all of the
+	// contents of the Node mempool. However, you have to loop and fetch
+	// each Tx until the mempool is empty.
 	for {
-		// Get NextTx from Node
+		// Get raw Tx bytes from Node via LocalTxMonitor
 		txRawBytes, err := o.LocalTxMonitor().Client.NextTx()
 		if err != nil {
 			panic(err)
@@ -83,13 +98,89 @@ func main() {
 		if txRawBytes == nil {
 			break
 		}
-		// Get Tx size
+		// Get Tx size of raw Tx bytes
 		size := len(txRawBytes)
-		// Get Tx Hash (of Tx Body)
-		tx, err := ledger.NewTransactionFromCbor(ledger.TxTypeBabbage, txRawBytes)
+		// Determine transaction type (era) from raw Tx bytes
+		txType, err := ledger.DetermineTransactionType(txRawBytes)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(fmt.Sprintf(" %-20d %s", size, tx.Hash()))
+		// Get ledger.Transaction from raw Tx bytes
+		tx, err := ledger.NewTransactionFromCbor(txType, txRawBytes)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(" ---")
+		// Print Tx size and Tx Hash (of Tx Body)
+		fmt.Println(fmt.Sprintf(
+			" %-20s %d",
+			"Size:",
+			size,
+		))
+		fmt.Println(fmt.Sprintf(
+			" %-20s %s",
+			"TxHash:",
+			tx.Hash(),
+		))
+		// Print number of inputs
+		fmt.Println(fmt.Sprintf(
+			" %-20s %d",
+			"Inputs:",
+			len(tx.Inputs()),
+		))
+		// Loop through transaction inputs and print ID#Index
+		for i, input := range tx.Inputs() {
+			fmt.Println(fmt.Sprintf(
+				" %-20s %s",
+				fmt.Sprintf("Input[%d]:", i),
+				fmt.Sprintf("%s#%d", input.Id().String(), input.Index()),
+			))
+		}
+		// Print number of outputs
+		fmt.Println(fmt.Sprintf(
+			" %-20s %d",
+			"Outputs:",
+			len(tx.Outputs()),
+		))
+		// Loop through transaction outputs
+		for o, output := range tx.Outputs() {
+			fmt.Println(fmt.Sprintf(
+				" %-20s %s",
+				fmt.Sprintf("Output[%d]:", o),
+				fmt.Sprintf("Address: %s", output.Address().String()),
+			))
+			fmt.Println(fmt.Sprintf(
+				" %-20s %s",
+				fmt.Sprintf("Output[%d]:", o),
+				fmt.Sprintf("Amount: %d", output.Amount()),
+			))
+			if output.Assets() == nil {
+				continue
+			}
+			// Marshal to JSON bytes from ledger.MultiAsset
+			j, _ := output.Assets().MarshalJSON()
+			var assets []Asset[ledger.MultiAssetTypeOutput]
+			// Unmarshal JSON bytes to list of Assets
+			err := json.Unmarshal(j, &assets)
+			if err != nil {
+				panic(err)
+			}
+			// Loop through each asset and display
+			for a, asset := range assets {
+				fmt.Println(fmt.Sprintf(
+					" %-20s %s",
+					fmt.Sprintf("Output[%d]:", o),
+					fmt.Sprintf(
+						"Asset[%d]: Policy: %s, Name: %s, Amount: %d",
+						a,
+						asset.PolicyId,
+						asset.Name,
+						asset.Amount,
+					),
+				))
+			}
+
+		}
+		fmt.Println()
 	}
 }
