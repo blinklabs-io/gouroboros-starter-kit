@@ -17,9 +17,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	ouroboros "github.com/blinklabs-io/gouroboros"
+	"github.com/blinklabs-io/cardano-models"
 	"github.com/blinklabs-io/gouroboros/ledger"
+	"github.com/fxamacker/cbor/v2"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -83,8 +86,10 @@ func main() {
 		numberOfTxs,
 	))
 	fmt.Println()
+
 	// Get all transactions
 	fmt.Println("Transactions:\n")
+
 	// The Ouroboros LocalTxMonitor mini-protocol allows fetching all of the
 	// contents of the Node mempool. However, you have to loop and fetch
 	// each Tx until the mempool is empty.
@@ -157,6 +162,11 @@ func main() {
 			if output.Assets() == nil {
 				continue
 			}
+			// We do not have a direct way to go from the Assets()
+			// output from gOuroboros to an easily iterable list
+			// of assets ([]Asset), so we use JSON parsing as an
+			// intermediary step.
+
 			// Marshal to JSON bytes from ledger.MultiAsset
 			j, _ := output.Assets().MarshalJSON()
 			var assets []Asset[ledger.MultiAssetTypeOutput]
@@ -180,6 +190,31 @@ func main() {
 				))
 			}
 
+		}
+		// Check if transaction has any metadata
+		if tx.Metadata() != nil {
+			// Get CBOR bytes of metadata
+			mdCbor := tx.Metadata().Cbor()
+
+			// Check if the CBOR bytes matches one of our known
+			// metadata types exposed in our models. Currently,
+			// only CIP-20 messages are supported.
+
+			// Check if the CBOR bytes matches CIP-20
+			var msgMetadata models.Cip20Metadata
+			err := cbor.Unmarshal(mdCbor, &msgMetadata)
+			if err != nil {
+				// Do nothing on error
+				continue
+			}
+			// Display message if found
+			if msgMetadata.Num674.Msg != nil {
+				fmt.Println(fmt.Sprintf(
+					" %-20s %s",
+					"Metadata[Message]:",
+					strings.Join(msgMetadata.Num674.Msg, " "),
+				))
+			}
 		}
 		fmt.Println()
 	}
