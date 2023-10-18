@@ -17,7 +17,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	ouroboros "github.com/blinklabs-io/gouroboros"
 	"github.com/blinklabs-io/cardano-models"
@@ -209,11 +208,13 @@ func main() {
 			}
 			// Display message if found
 			if msgMetadata.Num674.Msg != nil {
-				fmt.Println(fmt.Sprintf(
-					" %-20s %s",
-					"Metadata[Message]:",
-					strings.Join(msgMetadata.Num674.Msg, " "),
-				))
+				for m, msg := range msgMetadata.Num674.Msg {
+					fmt.Println(fmt.Sprintf(
+						" %-20s %s",
+						fmt.Sprintf("Metadata[Msg][%d]:", m),
+						msg,
+					))
+				}
 			}
 		}
 		fmt.Println()
