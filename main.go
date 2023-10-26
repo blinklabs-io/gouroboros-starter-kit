@@ -18,8 +18,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	ouroboros "github.com/blinklabs-io/gouroboros"
 	"github.com/blinklabs-io/cardano-models"
+	ouroboros "github.com/blinklabs-io/gouroboros"
 	"github.com/blinklabs-io/gouroboros/ledger"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/kelseyhightower/envconfig"
