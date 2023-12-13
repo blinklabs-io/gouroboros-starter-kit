@@ -3,8 +3,8 @@ module github.com/blinklabs-io/gouroboros-starter-kit
 go 1.20
 
 require (
-	github.com/blinklabs-io/cardano-models v0.0.0-20231017185043-3138e1eca17e
-	github.com/blinklabs-io/gouroboros v0.55.0
+	github.com/blinklabs-io/cardano-models v0.2.0
+	github.com/blinklabs-io/gouroboros v0.66.0
 	github.com/fxamacker/cbor/v2 v2.5.0
 	github.com/kelseyhightower/envconfig v1.4.0
 )
@@ -12,6 +12,6 @@ require (
 require (
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	golang.org/x/crypto v0.14.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/crypto v0.15.0 // indirect
+	golang.org/x/sys v0.14.0 // indirect
 )
