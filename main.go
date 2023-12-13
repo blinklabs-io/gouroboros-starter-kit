@@ -87,7 +87,7 @@ func main() {
 	fmt.Println()
 
 	// Get all transactions
-	fmt.Println("Transactions:\n")
+	fmt.Println("Transactions:")
 
 	// The Ouroboros LocalTxMonitor mini-protocol allows fetching all of the
 	// contents of the Node mempool. However, you have to loop and fetch
@@ -209,11 +209,11 @@ func main() {
 			// Display message if found
 			if msgMetadata.Num674.Msg != nil {
 				for m, msg := range msgMetadata.Num674.Msg {
-					fmt.Println(fmt.Sprintf(
-						" %-20s %s",
+					fmt.Printf(
+						" %-20s %s\n",
 						fmt.Sprintf("Metadata[Msg][%d]:", m),
 						msg,
-					))
+					)
 				}
 			}
 		}
