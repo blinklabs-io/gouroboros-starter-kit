@@ -45,14 +45,14 @@ tutorial:
 This starter kit demonstrates communication with a Cardano Node using the
 Node-to-Client LocalTxMonitor protocol to fetch information about the Node's
 mempool contents. It includes a single `main.go` which performs all of the
-work.
+work, which is located under `cmd/tx-monitor`.
 
 ## Running the Code
 
 Running the code is simple.
 
 ```bash
-go run .
+go run ./cmd/tx-monitor
 ```
 
 The script will output the contents of the Cardano Node's mempool, then exit.
