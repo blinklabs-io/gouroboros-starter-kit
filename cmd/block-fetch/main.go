@@ -49,7 +49,7 @@ func main() {
 		Slot:         72316896,
 	}
 	// Parse environment variables
-	if err := envconfig.Process("cardano_node", &cfg); err != nil {
+	if err := envconfig.Process("block_fetch", &cfg); err != nil {
 		panic(err)
 	}
 	// Configure NetworkMagic
