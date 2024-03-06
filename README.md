@@ -42,17 +42,70 @@ tutorial:
 
 ## What is Included
 
+This starter kit demonstrates communication with a Cardano Node using either
+the Node-to-Client or Node-to-Node operation modes of the Ouroboros network
+protocol and provides examples of multiple Ouroboros mini-protocols.
+
+- BlockFetch
+- ChainSync
+- LocalTxMonitor
+
+### BlockFetch
+
+The BlockFetch mini-protocol allows for fetching specific blocks from a remote
+Cardano Node using Node-to-Node communication over the network. The code for
+this example is in a single `main.go` file under `./cmd/block-fetch`.
+
+By default, it will fetch the first block of the Babbage Era on the Cardano
+mainnet from IOG's backbone servers. To change this, use the following
+environment variables:
+
+- `BLOCK_FETCH_ADDRESS`: the address:port pair of a remote Cardano Node to
+  retrieve block
+- `BLOCK_FETCH_HASH`: the block hash to fetch
+- `BLOCK_FETCH_NETWORK`: named Cardano network to use to configure network
+  magic automatically
+- `BLOCK_FETCH_NETWORK_MAGIC`: magic number used to identify a network
+- `BLOCK_FETCH_RETURN_CBOR`: return raw CBOR bytes instead of describing text
+- `BLOCK_FETCH_SLOT`: the slot in which the block hash was minted
+
+Default:
+```bash
+go run ./cmd/block-fetch
+```
+
+Return raw CBOR bytes:
+```bash
+BLOCK_FETCH_RETURN_CBOR=true go run ./cmd/block-fetch
+```
+
+### ChainSync
+
+The ChainSync mini-protocol allows for syncronization of the blockchain from a
+Cardano Node using either Node-to-Node or Node-to-Client communication. This
+protocol is more complex, and is split into smaller pieces. The simplest is in
+a single `main.go` file under `./cmd/chain-tip`.
+
+For `chain-tip`, the default configuration will communicate over the local
+UNIX socket mounted at `/ipc/node.socket` via Node-to-Client ChainSync.
+
+Running the code:
+```bash
+go run ./cmd/chain-tip
+```
+
+### LocalTxMonitor
+
 This starter kit demonstrates communication with a Cardano Node using the
 Node-to-Client LocalTxMonitor protocol to fetch information about the Node's
 mempool contents. It includes a single `main.go` which performs all of the
 work, which is located under `cmd/tx-monitor`.
 
-## Running the Code
-
-Running the code is simple.
+The default configuration will communicate over the local UNIX socket mounted
+at `/ipc/node.socket` via Node-to-Client LocalTxMonitor.
 
 ```bash
 go run ./cmd/tx-monitor
 ```
 
-The script will output the contents of the Cardano Node's mempool, then exit.
+The script will output the contents of the Cardano Node's mempool, then exits.

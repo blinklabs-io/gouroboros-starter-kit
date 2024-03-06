@@ -8,6 +8,11 @@
 *.so
 *.dylib
 
+# Binaries for our programs
+/block-fetch
+/chain-tip
+/tx-monitor
+
 # Test binary, built with `go test -c`
 *.test
 
