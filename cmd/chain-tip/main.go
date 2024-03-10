@@ -52,7 +52,6 @@ func main() {
 		ouroboros.WithNetworkMagic(uint32(cfg.Magic)),
 		ouroboros.WithErrorChan(errorChan),
 		ouroboros.WithNodeToNode(false),
-		ouroboros.WithKeepAlive(true),
 	)
 	if err != nil {
 		panic(err)
