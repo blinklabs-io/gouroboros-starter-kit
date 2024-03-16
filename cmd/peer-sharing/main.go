@@ -68,6 +68,8 @@ func main() {
 		ouroboros.WithErrorChan(errorChan),
 		ouroboros.WithNodeToNode(true),
 		ouroboros.WithKeepAlive(true),
+		ouroboros.WithPeerSharing(true),
+		ouroboros.WithFullDuplex(true),
 	)
 	if err != nil {
 		panic(err)
@@ -82,6 +84,9 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("peers = %#v\n", peers)
+	fmt.Println("Peers:")
 	fmt.Println()
+	for _, peer := range peers {
+		fmt.Printf("%s:%d\n", peer.IP.String(), peer.Port)
+	}
 }
