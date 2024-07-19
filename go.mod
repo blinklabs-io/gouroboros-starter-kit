@@ -3,7 +3,7 @@ module github.com/blinklabs-io/gouroboros-starter-kit
 go 1.21
 
 require (
-	github.com/blinklabs-io/cardano-models v0.3.5
+	github.com/blinklabs-io/cardano-models v0.3.6
 	github.com/blinklabs-io/gouroboros v0.90.0
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/kelseyhightower/envconfig v1.4.0
