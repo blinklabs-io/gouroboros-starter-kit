@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/blinklabs-io/cardano-models v0.3.6
-	github.com/blinklabs-io/gouroboros v0.92.0
+	github.com/blinklabs-io/gouroboros v0.93.0
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/kelseyhightower/envconfig v1.4.0
 )
@@ -17,11 +17,11 @@ require (
 	github.com/go-playground/validator/v10 v10.22.0 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/utxorpc/go-codegen v0.8.0 // indirect
+	github.com/utxorpc/go-codegen v0.9.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	golang.org/x/crypto v0.25.0 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 )
