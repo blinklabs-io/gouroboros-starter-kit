@@ -41,7 +41,7 @@ type Config struct {
 func main() {
 	// Set config defaults (first mainnet Babbage block)
 	var cfg = Config{
-		Address:      "backbone.cardano-mainnet.iohk.io:3001",
+		Address:      "backbone.cardano.iog.io:3001",
 		Hash:         "eea1247726ababb0b15ef7068b6917ceb6ebe3021c40fe44608585bba44e24b6",
 		Network:      "mainnet",
 		NetworkMagic: 0,

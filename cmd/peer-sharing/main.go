@@ -34,7 +34,7 @@ type Config struct {
 func main() {
 	// Set config defaults
 	var cfg = Config{
-		// Address:      "backbone.cardano-mainnet.iohk.io:3001",
+		// Address:      "backbone.cardano.iog.io:3001",
 		Address:      "sanchonet-node.play.dev.cardano.org:3001",
 		Network:      "sanchonet",
 		NetworkMagic: 0,
