@@ -148,14 +148,14 @@ func main() {
 		// Show metadata, if present
 		if tx.Metadata() != nil {
 			fmt.Printf(
-				"- Metadata: %#v (%x)\n",
+				"  Metadata: %#v (%x)\n",
 				tx.Metadata().Value(),
 				tx.Metadata().Cbor(),
 			)
 		}
 		// Inputs
 		if len(tx.Inputs()) > 0 {
-			fmt.Println("- Inputs:")
+			fmt.Println("  Inputs:")
 			for _, input := range tx.Inputs() {
 				fmt.Printf(
 					"  - index = %d, id = %s\n",
@@ -166,7 +166,7 @@ func main() {
 		}
 		// Outputs
 		if len(tx.Outputs()) > 0 {
-			fmt.Println("- Outputs:")
+			fmt.Println("  Outputs:")
 			for _, output := range tx.Outputs() {
 				// Output our normal address and amount, in all transactions
 				fmt.Printf(
@@ -205,6 +205,39 @@ func main() {
 							jsonData,
 						)
 					}
+				}
+			}
+		}
+		// Collateral
+		if len(tx.Collateral()) > 0 {
+			fmt.Println("  Collateral inputs:")
+			for _, input := range tx.Collateral() {
+				fmt.Printf(
+					"  - index = %d, id = %s\n",
+					input.Index(),
+					input.Id(),
+				)
+			}
+		}
+		// Certificates
+		if len(tx.Certificates()) > 0 {
+			fmt.Println("  Certificates:")
+			for _, cert := range tx.Certificates() {
+				fmt.Printf("  - %T\n", cert)
+			}
+		}
+		// Asset mints
+		if tx.AssetMint() != nil {
+			fmt.Println("  Asset mints:")
+			assets := tx.AssetMint()
+			for _, policyId := range assets.Policies() {
+				for _, assetName := range assets.Assets(policyId) {
+					fmt.Printf(
+						"    - Asset: name = %s, amount = %d, policy = %s\n",
+						assetName,
+						assets.Asset(policyId, assetName),
+						policyId,
+					)
 				}
 			}
 		}
