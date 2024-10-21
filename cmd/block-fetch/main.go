@@ -54,8 +54,8 @@ func main() {
 	}
 	// Configure NetworkMagic
 	if cfg.NetworkMagic == 0 {
-		network := ouroboros.NetworkByName(cfg.Network)
-		if network == ouroboros.NetworkInvalid {
+		network, ok := ouroboros.NetworkByName(cfg.Network)
+		if !ok {
 			fmt.Printf("invalid network specified: %v\n", cfg.Network)
 			os.Exit(1)
 		}

@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/blinklabs-io/cardano-models"
+	models "github.com/blinklabs-io/cardano-models"
 	ouroboros "github.com/blinklabs-io/gouroboros"
 	"github.com/blinklabs-io/gouroboros/ledger"
 	"github.com/fxamacker/cbor/v2"
