@@ -49,6 +49,7 @@ protocol and provides examples of multiple Ouroboros mini-protocols.
 - BlockFetch
 - ChainSync
 - LocalTxMonitor
+- PeerSharing
 
 ### BlockFetch
 
@@ -109,3 +110,26 @@ go run ./cmd/tx-monitor
 ```
 
 The script will output the contents of the Cardano Node's mempool, then exits.
+
+### PeerSharing
+
+This starter kit demonstrates communication with a Cardano Node using the
+Node-to-Node PeerSharing protocol to get a list of connected and discovered
+peers from the remote Node. It includes a single `main.go` which performs
+all of the work, which is located under `cmd/peer-sharing`.
+
+By default, it will fetch the 10 mainnet peers from from IOG's backbone
+ servers. To change this, use the following environment variables:
+
+- `PEER_SHARING_ADDRESS`: the address:port pair of a remote Cardano Node to
+  retrieve block
+- `PEER_SHARING_NETWORK`: named Cardano network to use to configure network
+  magic automatically
+- `PEER_SHARING_NETWORK_MAGIC`: magic number used to identify a network
+- `PEER_SHARING_PEERS`: number of peers to request, max/default 10
+
+```bash
+go run ./cmd/peer-sharing
+```
+
+The script will output 10 peer addresses from the Node, then exit.
