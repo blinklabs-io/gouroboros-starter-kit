@@ -113,13 +113,13 @@ func main() {
 	case *ledger.ByronEpochBoundaryBlock:
 		fmt.Printf(
 			"Block: era = Byron (EBB), epoch = %d, id = %s\n",
-			v.Header.ConsensusData.Epoch,
+			v.BlockHeader.ConsensusData.Epoch,
 			v.Hash(),
 		)
 	case *ledger.ByronMainBlock:
 		fmt.Printf(
 			"Block: era = Byron, epoch = %d, slot = %d, id = %s\n",
-			v.Header.ConsensusData.SlotId.Epoch,
+			v.BlockHeader.ConsensusData.SlotId.Epoch,
 			v.SlotNumber(),
 			v.Hash(),
 		)
