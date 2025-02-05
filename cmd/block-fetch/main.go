@@ -93,6 +93,9 @@ func main() {
 	block, err := o.BlockFetch().Client.GetBlock(
 		ocommon.NewPoint(cfg.Slot, blockHash),
 	)
+	if block == nil {
+		panic("empty block! this shouldn't happen")
+	}
 	if err != nil {
 		panic(err)
 	}
