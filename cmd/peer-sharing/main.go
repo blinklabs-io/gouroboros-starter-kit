@@ -1,4 +1,4 @@
-// Copyright 2024 Blink Labs Software
+// Copyright 2025 Blink Labs Software
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 
 	ouroboros "github.com/blinklabs-io/gouroboros"
@@ -42,6 +43,16 @@ func main() {
 	// Parse environment variables
 	if err := envconfig.Process("peer_sharing", &cfg); err != nil {
 		panic(err)
+	}
+	// Error check peers
+	if cfg.Peers > math.MaxUint8 {
+		panic(
+			fmt.Sprintf(
+				"peers not within range: given: %d, max: %d",
+				cfg.Peers,
+				math.MaxUint8,
+			),
+		)
 	}
 	// Configure NetworkMagic
 	if cfg.NetworkMagic == 0 {
