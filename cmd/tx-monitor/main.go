@@ -151,7 +151,7 @@ func main() {
 			fmt.Printf(
 				" %-20s %s\n",
 				fmt.Sprintf("Output[%d]:", o),
-				fmt.Sprintf("Address: %s", output.Address().String()),
+				"Address: "+output.Address().String(),
 			)
 			fmt.Printf(
 				" %-20s %s\n",
