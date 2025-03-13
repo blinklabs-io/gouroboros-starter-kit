@@ -40,7 +40,7 @@ type Config struct {
 // This code will be executed when run
 func main() {
 	// Set config defaults (first mainnet Babbage block)
-	var cfg = Config{
+	cfg := Config{
 		Address:      "backbone.cardano.iog.io:3001",
 		Hash:         "eea1247726ababb0b15ef7068b6917ceb6ebe3021c40fe44608585bba44e24b6",
 		Network:      "mainnet",

@@ -30,7 +30,7 @@ type Config struct {
 // This code will be executed when run
 func main() {
 	// Set config defaults
-	var cfg = Config{
+	cfg := Config{
 		Magic:      764824073,
 		SocketPath: "/ipc/node.socket",
 	}

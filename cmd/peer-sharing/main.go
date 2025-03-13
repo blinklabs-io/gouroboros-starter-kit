@@ -34,7 +34,7 @@ type Config struct {
 // This code will be executed when run
 func main() {
 	// Set config defaults
-	var cfg = Config{
+	cfg := Config{
 		Address:      "backbone.cardano.iog.io:3001",
 		Network:      "mainnet",
 		NetworkMagic: 0,
