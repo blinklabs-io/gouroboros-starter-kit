@@ -43,7 +43,7 @@ type Asset[T ledger.MultiAssetTypeOutput | ledger.MultiAssetTypeMint] struct {
 // This code will be executed when run
 func main() {
 	// Set config defaults
-	var cfg = Config{
+	cfg := Config{
 		Magic:      764824073,
 		SocketPath: "/ipc/node.socket",
 	}
@@ -188,7 +188,6 @@ func main() {
 					),
 				)
 			}
-
 		}
 		// Check if transaction has any metadata
 		if tx.Metadata() != nil {
