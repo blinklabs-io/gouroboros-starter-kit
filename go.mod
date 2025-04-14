@@ -5,7 +5,7 @@ go 1.23.6
 toolchain go1.24.1
 
 require (
-	github.com/blinklabs-io/cardano-models v0.5.0
+	github.com/blinklabs-io/cardano-models v0.5.1
 	github.com/blinklabs-io/gouroboros v0.116.0
 	github.com/fxamacker/cbor/v2 v2.8.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -17,7 +17,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.25.0 // indirect
+	github.com/go-playground/validator/v10 v10.26.0 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/utxorpc/go-codegen v0.16.0 // indirect
