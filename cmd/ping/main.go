@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -72,7 +73,7 @@ var getTip = func(sync *chainsync.ChainSync) (*chainsync.Tip, error) {
 func PingNode(conn NodeConnection, cfg *Config) PingResult {
 	network, address, ok := GetConnectionDetails(cfg)
 	if !ok {
-		return PingResult{Error: fmt.Errorf("no connection details provided, must specify either socket path or TCP address")}
+		return PingResult{Error: errors.New("no connection details provided, must specify either socket path or TCP address")}
 	}
 
 	start := time.Now()
