@@ -10,10 +10,10 @@ import (
 )
 
 type Config struct {
-	Magic      uint32 `default:"764824073"`
-	SocketPath string `split_words:"true" default:"/ipc/node.socket"`
-	Address    string `default:"backbone.cardano.iog.io:3001"`
-	Network    string `default:"mainnet"`
+	Magic      uint32
+	SocketPath string `split_words:"true"`
+	Address    string
+	Network    string
 }
 
 type NodeConnection interface {
@@ -28,17 +28,40 @@ type PingResult struct {
 	Error          error
 }
 
-func GetConnectionDetails(cfg *Config) (string, string) {
-	if cfg.SocketPath != "" {
-		return "unix", cfg.SocketPath
+func GetConnectionDetails(cfg *Config) (string, string, bool) {
+	// Prefer TCP address if both are provided
+	if cfg.Address != "" {
+		return "tcp", cfg.Address, true
 	}
-	return "tcp", cfg.Address
+	if cfg.SocketPath != "" {
+		return "unix", cfg.SocketPath, false
+	}
+	return "", "", false
 }
 
 func NewConnection(cfg *Config) (NodeConnection, error) {
+	if cfg.Magic == 0 {
+		network, ok := ouroboros.NetworkByName(cfg.Network)
+		if !ok {
+			return nil, fmt.Errorf("invalid network specified: %v", cfg.Network)
+		}
+		cfg.Magic = network.NetworkMagic
+	}
+
+	errorChan := make(chan error)
+	go func() {
+		for err := range errorChan {
+			fmt.Printf("connection error: %v\n", err)
+		}
+	}()
+
+	_, _, isTcp := GetConnectionDetails(cfg)
+
 	return ouroboros.NewConnection(
 		ouroboros.WithNetworkMagic(cfg.Magic),
-		ouroboros.WithNodeToNode(true),
+		ouroboros.WithNodeToNode(isTcp),
+		ouroboros.WithKeepAlive(true),
+		ouroboros.WithErrorChan(errorChan),
 	)
 }
 
@@ -47,7 +70,10 @@ var getTip = func(sync *chainsync.ChainSync) (*chainsync.Tip, error) {
 }
 
 func PingNode(conn NodeConnection, cfg *Config) PingResult {
-	network, address := GetConnectionDetails(cfg)
+	network, address, ok := GetConnectionDetails(cfg)
+	if !ok {
+		return PingResult{Error: fmt.Errorf("no connection details provided, must specify either socket path or TCP address")}
+	}
 
 	start := time.Now()
 	if err := conn.Dial(network, address); err != nil {
@@ -91,7 +117,11 @@ func main() {
 		return
 	}
 
-	fmt.Printf("Node-to-Node Ping Results:\n")
+	connType := "Node-to-Node"
+	if cfg.SocketPath != "" {
+		connType = "UNIX socket"
+	}
+	fmt.Printf("%s Ping Results:\n", connType)
 	fmt.Printf("Connection established in: %s\n", result.ConnectionTime)
 	fmt.Printf("Protocol response time:   %s\n", result.ProtocolTime)
 }

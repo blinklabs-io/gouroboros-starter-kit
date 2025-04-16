@@ -2,33 +2,40 @@ package main
 
 import (
 	"errors"
-	//"log"
 	"os"
 	"testing"
 	"time"
 
-	//"time"
-
 	"github.com/blinklabs-io/gouroboros/protocol/chainsync"
 )
 
-type MockNodeConnection struct {
-	DialFunc      func(network, address string) error
-	ChainSyncFunc func() *chainsync.ChainSync
-	CloseFunc     func() error
+// testConnection implements a simplified NodeConnection for testing
+type testConnection struct {
+	dialFunc    func(string, string) error
+	getTipFunc  func() (*chainsync.Tip, error)
+	closeFunc   func() error
+	dialed      bool
+	networkType string
 }
 
-func (m *MockNodeConnection) Dial(network, address string) error {
-	return m.DialFunc(network, address)
+func (t *testConnection) Dial(network, address string) error {
+	t.dialed = true
+	t.networkType = network
+	if t.dialFunc != nil {
+		return t.dialFunc(network, address)
+	}
+	return nil
 }
 
-func (m *MockNodeConnection) ChainSync() *chainsync.ChainSync {
-	return m.ChainSyncFunc()
+func (t *testConnection) ChainSync() *chainsync.ChainSync {
+	// We don't actually need the real ChainSync implementation for testing
+	// We'll override getTip globally for our tests
+	return nil
 }
 
-func (m *MockNodeConnection) Close() error {
-	if m.CloseFunc != nil {
-		return m.CloseFunc()
+func (t *testConnection) Close() error {
+	if t.closeFunc != nil {
+		return t.closeFunc()
 	}
 	return nil
 }
@@ -40,78 +47,80 @@ func restoreDefaultGetTip() {
 }
 
 func TestPingNode_Success(t *testing.T) {
-	getTip = func(sync *chainsync.ChainSync) (*chainsync.Tip, error) {
+	// Override getTip for this test
+	getTip = func(_ *chainsync.ChainSync) (*chainsync.Tip, error) {
 		return &chainsync.Tip{}, nil
 	}
 	defer restoreDefaultGetTip()
 
-	mockConn := &MockNodeConnection{
-		DialFunc: func(network, address string) error {
-			return nil
-		},
-		ChainSyncFunc: func() *chainsync.ChainSync {
-			return &chainsync.ChainSync{}
-		},
+	conn := &testConnection{}
+
+	cfg := &Config{
+		Address: "test.example.com:3001",
+		Network: "testnet",
 	}
 
-	cfg := &Config{SocketPath: "/fake/socket"}
-	result := PingNode(mockConn, cfg)
+	result := PingNode(conn, cfg)
 
+	if !conn.dialed {
+		t.Error("Expected connection to be dialed")
+	}
+	if conn.networkType != "tcp" {
+		t.Error("Expected TCP connection")
+	}
 	if result.Error != nil {
 		t.Errorf("Expected no error, got: %v", result.Error)
 	}
 	if result.ConnectionTime <= 0 {
-		t.Errorf("Expected positive connection time")
+		t.Error("Expected positive connection time")
 	}
 	if result.ProtocolTime <= 0 {
-		t.Errorf("Expected positive protocol time")
+		t.Error("Expected positive protocol time")
 	}
 }
 
 func TestPingNode_ProtocolError(t *testing.T) {
-	getTip = func(sync *chainsync.ChainSync) (*chainsync.Tip, error) {
-		return nil, errors.New("fake protocol failure")
+	// Override getTip for this test
+	getTip = func(_ *chainsync.ChainSync) (*chainsync.Tip, error) {
+		return nil, errors.New("protocol error")
 	}
 	defer restoreDefaultGetTip()
 
-	mockConn := &MockNodeConnection{
-		DialFunc: func(network, address string) error {
-			return nil
-		},
-		ChainSyncFunc: func() *chainsync.ChainSync {
-			return &chainsync.ChainSync{}
-		},
+	conn := &testConnection{}
+
+	cfg := &Config{
+		Address: "test.example.com:3001",
+		Network: "testnet",
 	}
 
-	cfg := &Config{SocketPath: "/fake/socket"}
-	result := PingNode(mockConn, cfg)
+	result := PingNode(conn, cfg)
 
-	if result.Error == nil || result.Error.Error() != "protocol error: fake protocol failure" {
+	if result.Error == nil || result.Error.Error() != "protocol error: protocol error" {
 		t.Errorf("Expected protocol error, got: %v", result.Error)
 	}
 }
 
 func TestPingNode_ConnectionError(t *testing.T) {
-	// Override getTip to make sure no protocol call happens - only connection is needed
-	getTip = func(sync *chainsync.ChainSync) (*chainsync.Tip, error) {
+	// Override getTip for this test
+	getTip = func(_ *chainsync.ChainSync) (*chainsync.Tip, error) {
+		t.Error("getTip should not be called when connection fails")
 		return nil, nil
 	}
 	defer restoreDefaultGetTip()
 
-	// Simulate a connection failure by returning an error in DialFunc
-	mockConn := &MockNodeConnection{
-		DialFunc: func(network, address string) error {
-			return errors.New("connection failed") // Simulating connection error
-		},
-		ChainSyncFunc: func() *chainsync.ChainSync {
-			return &chainsync.ChainSync{}
+	conn := &testConnection{
+		dialFunc: func(_, _ string) error {
+			return errors.New("connection failed")
 		},
 	}
 
-	cfg := &Config{SocketPath: "/fake/socket"}
-	result := PingNode(mockConn, cfg)
+	cfg := &Config{
+		Address: "test.example.com:3001",
+		Network: "testnet",
+	}
 
-	// Check that the correct error is returned
+	result := PingNode(conn, cfg)
+
 	if result.Error == nil || result.Error.Error() != "connection failed: connection failed" {
 		t.Errorf("Expected connection error, got: %v", result.Error)
 	}
@@ -122,31 +131,26 @@ func TestPingNode_Integration(t *testing.T) {
 		t.Skip("skipping integration test in short mode")
 	}
 
-	// Try to get connection details from environment
 	socketPath := os.Getenv("CARDANO_NODE_SOCKET_PATH")
 	network := os.Getenv("CARDANO_NODE_NETWORK")
 	address := os.Getenv("CARDANO_NODE_ADDRESS")
 
-	// Skip if no connection method is configured
-	if socketPath == "" && address == "" && network == "" {
-		t.Skip("skipping integration test: set CARDANO_NODE_SOCKET_PATH, CARDANO_NODE_ADDRESS, or CARDANO_NODE_NETWORK to run")
+	if socketPath == "" && address == "" {
+		t.Skip("skipping integration test: set CARDANO_NODE_SOCKET_PATH or CARDANO_NODE_ADDRESS to run")
 	}
 
-	// Configure based on available options
 	cfg := &Config{
 		SocketPath: socketPath,
 		Address:    address,
 		Network:    network,
 	}
 
-	// Create real connection
 	conn, err := NewConnection(cfg)
 	if err != nil {
 		t.Fatalf("failed to create connection: %v", err)
 	}
 	defer conn.Close()
 
-	// Run with timeout
 	resultChan := make(chan PingResult)
 	go func() {
 		resultChan <- PingNode(conn, cfg)
