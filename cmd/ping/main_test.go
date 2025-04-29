@@ -95,7 +95,8 @@ func TestPingNode_ProtocolError(t *testing.T) {
 
 	result := PingNode(conn, cfg)
 
-	if result.Error == nil || result.Error.Error() != "protocol error: protocol error" {
+	if result.Error == nil ||
+		result.Error.Error() != "protocol error: protocol error" {
 		t.Errorf("Expected protocol error, got: %v", result.Error)
 	}
 }
@@ -121,7 +122,8 @@ func TestPingNode_ConnectionError(t *testing.T) {
 
 	result := PingNode(conn, cfg)
 
-	if result.Error == nil || result.Error.Error() != "connection failed: connection failed" {
+	if result.Error == nil ||
+		result.Error.Error() != "connection failed: connection failed" {
 		t.Errorf("Expected connection error, got: %v", result.Error)
 	}
 }
@@ -136,7 +138,9 @@ func TestPingNode_Integration(t *testing.T) {
 	address := os.Getenv("CARDANO_NODE_ADDRESS")
 
 	if socketPath == "" && address == "" {
-		t.Skip("skipping integration test: set CARDANO_NODE_SOCKET_PATH or CARDANO_NODE_ADDRESS to run")
+		t.Skip(
+			"skipping integration test: set CARDANO_NODE_SOCKET_PATH or CARDANO_NODE_ADDRESS to run",
+		)
 	}
 
 	cfg := &Config{
