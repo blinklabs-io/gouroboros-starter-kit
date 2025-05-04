@@ -133,3 +133,19 @@ go run ./cmd/peer-sharing
 ```
 
 The script will output 10 peer addresses from the Node, then exit.
+
+### Ping
+
+The ping command allows to measure the latency of establishing a connection and performing a ChainSync protocol interaction with a Cardano node. It supports both Node-to-Node (TCP/IP) and UNIX socket connections.The code for this example is in a single main.go file under `./cmd/ping`.
+
+By default, it will connect to a local Cardano node via UNIX socket and measure both connection and protocol latency. To customize the connection, use the following environment variables:
+
+- `CARDANO_NODE_SOCKET_PATH`: Path to the node's UNIX socket
+- `CARDANO_NODE_ADDRESS`: Remote node address in host:port format (for TCP connections)
+- `CARDANO_NODE_NETWORK`: Named Cardano network to use to configure network magic automatically 
+- `CARDANO_NODE_MAGIC`: Magic number used to identify a network (overrides network-based magic)
+
+Default:
+```bash
+go run ./cmd/ping
+```
