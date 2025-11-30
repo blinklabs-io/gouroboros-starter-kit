@@ -3,8 +3,8 @@ filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
 github.com/bits-and-blooms/bitset v1.20.0 h1:2F+rfL86jE2d/bmw7OhqUg2Sj/1rURkBn3MdfoPyRVU=
 github.com/bits-and-blooms/bitset v1.20.0/go.mod h1:7hO7Gc7Pp1vODcmWvKMRA9BNmbv6a/7QIWpPxHddWR8=
-github.com/blinklabs-io/cardano-models v0.6.0 h1:WHawiyzoHwDpvmUnntjRPrciv4SbXlqCGlHPLwVHhK8=
-github.com/blinklabs-io/cardano-models v0.6.0/go.mod h1:2g/kQL/xunie4AHr3fmXj86OMkc4ekbLIJYhYmDqPgA=
+github.com/blinklabs-io/cardano-models v0.7.0 h1:lonKK1BAQ6/ocUA27T/GUAwEy2/9n2me2dD3+PN0/cM=
+github.com/blinklabs-io/cardano-models v0.7.0/go.mod h1:TIWK9uP7A/mdvRjBBhr433mrdfOm0bumtFnK6dLQ2d4=
 github.com/blinklabs-io/gouroboros v0.140.0 h1:dFK2iunkTflCI2hlDSGZJJ7JerYhpdE41HnBUVvjj9E=
 github.com/blinklabs-io/gouroboros v0.140.0/go.mod h1:FxKQNNNRQN5F/Cl4pnW7SHhpPo7fD57mTPGo4N9ulnY=
 github.com/blinklabs-io/ouroboros-mock v0.3.9 h1:UnciDccJ5tZCR1xI0BcxGZcYjJ/PS5MpnjiiGtrZ680=
