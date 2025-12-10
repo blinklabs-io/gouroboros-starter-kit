@@ -42,11 +42,24 @@ func main() {
 	// Set config defaults (first mainnet Babbage block)
 	cfg := Config{
 		Address:      "backbone.cardano.iog.io:3001",
-		Hash:         "eea1247726ababb0b15ef7068b6917ceb6ebe3021c40fe44608585bba44e24b6",
 		Network:      "mainnet",
 		NetworkMagic: 0,
 		ReturnCbor:   false,
-		Slot:         72316896,
+		// Byron
+		// Hash: "37e8df8fe301e8187b1dbfc50713ab0b7ab74c441cef1461bba710e5f05a1959",
+		// Slot: 2656803,
+		// Shelley
+		// Hash: "89b237ee673ef79f065d699aa539bba9644d34b9aa8a49510ab14ad8735c293e",
+		// Slot: 4506600,
+		// Allegra
+		// Hash: "078d102d0247463f91eef69fc77f3fbbf120f3118e68cd5e6a493c15446dbf8c",
+		// Slot: 16588800,
+		// Alonzo
+		// Hash: "8959c0323b94cc670afe44222ab8b4e72cfcad3b5ab665f334bbe642dc6e9ef4",
+		// Slot: 39916975,
+		// Babbage
+		Hash: "eea1247726ababb0b15ef7068b6917ceb6ebe3021c40fe44608585bba44e24b6",
+		Slot: 72316896,
 	}
 	// Parse environment variables
 	if err := envconfig.Process("block_fetch", &cfg); err != nil {
@@ -136,6 +149,11 @@ func main() {
 		)
 	}
 
+	fmt.Printf(
+		"Block CBOR: %x\n",
+		block.Cbor(),
+	)
+
 	// Extended block info
 
 	// Issuer
@@ -148,6 +166,7 @@ func main() {
 	fmt.Println("Transactions:")
 	for _, tx := range block.Transactions() {
 		fmt.Printf("- Hash: %s\n", tx.Hash())
+		fmt.Printf("- CBOR: %x\n", tx.Cbor())
 		// Show metadata, if present
 		if tx.Metadata() != nil {
 			fmt.Printf(
