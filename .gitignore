@@ -13,6 +13,7 @@
 /chain-tip
 /peer-sharing
 /tx-monitor
+/state-query
 
 # Test binary, built with `go test -c`
 *.test
