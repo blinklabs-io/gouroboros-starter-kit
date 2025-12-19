@@ -50,6 +50,7 @@ protocol and provides examples of multiple Ouroboros mini-protocols.
 - ChainSync
 - LocalStateQuery
 - LocalTxMonitor
+- LocalTxSubmission
 - PeerSharing
 
 ### BlockFetch
@@ -145,6 +146,35 @@ go run ./cmd/tx-monitor
 ```
 
 The script will output the contents of the Cardano Node's mempool, then exits.
+
+### LocalTxSubmission
+
+This starter kit demonstrates communication with a Cardano Node using the
+Node-to-Client LocalTxSubmission protocol to submit transactions to the Node's
+mempool. It includes a single `main.go` which performs all of the work, which
+is located under `cmd/tx-submission`.
+
+The default configuration will communicate over the local UNIX socket mounted
+at `/ipc/node.socket` via Node-to-Client LocalTxSubmission.
+
+Command-line flags:
+
+- `-tx-file`: Path to a JSON transaction file (must contain `cborHex` field)
+- `-raw-tx-file`: Path to a raw CBOR transaction file
+
+Examples:
+
+Submit a transaction from a JSON file:
+```bash
+go run ./cmd/tx-submission -tx-file transaction.json
+```
+
+Submit a transaction from a raw CBOR file:
+```bash
+go run ./cmd/tx-submission -raw-tx-file transaction.cbor
+```
+
+The script will output a success message if the transaction was accepted by the node.
 
 ### PeerSharing
 
