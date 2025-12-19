@@ -1,0 +1,72 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version:
+          - '1.24'
+          - 'stable'
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ matrix.go-version }}-
+
+      - name: Tidy dependencies
+        run: go mod tidy
+
+      - name: Build block-fetch
+        run: go build -o block-fetch ./cmd/block-fetch
+
+      - name: Build chain-sync
+        run: go build -o chain-sync ./cmd/chain-sync
+
+      - name: Build chain-tip
+        run: go build -o chain-tip ./cmd/chain-tip
+
+      - name: Build peer-sharing
+        run: go build -o peer-sharing ./cmd/peer-sharing
+
+      - name: Build ping
+        run: go build -o ping ./cmd/ping
+
+      - name: Build tx-monitor
+        run: go build -o tx-monitor ./cmd/tx-monitor
+
+      - name: Verify binaries exist
+        run: |
+          test -f block-fetch || exit 1
+          test -f chain-sync || exit 1
+          test -f chain-tip || exit 1
+          test -f peer-sharing || exit 1
+          test -f ping || exit 1
+          test -f tx-monitor || exit 1
+          echo "All binaries built successfully"
+
+      - name: Run tests
+        run: go test -v -race -short ./...
