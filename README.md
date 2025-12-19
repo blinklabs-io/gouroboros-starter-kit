@@ -95,6 +95,40 @@ Running the code:
 go run ./cmd/chain-tip
 ```
 
+#### chain-sync
+
+The full ChainSync implementation that supports blockchain synchronization with
+rollback/rollforward handlers. The code is in a single `main.go` file under
+`./cmd/chain-sync`.
+
+This command supports both Node-to-Client (NtC, default) and Node-to-Node (NtN)
+protocols. It defaults to NtC using a UNIX socket connection, and automatically
+switches to NtN when a TCP address is provided.
+
+To customize the connection, use the following environment variables:
+
+- `CARDANO_NODE_SOCKET_PATH`: Path to the node's UNIX socket (default: `/ipc/node.socket`)
+- `CARDANO_NODE_ADDRESS`: Remote node address in host:port format (for TCP/NtN connections)
+- `CARDANO_NODE_NETWORK`: Named Cardano network to use to configure network magic automatically (mainnet, preview, preprod, etc.)
+- `CARDANO_NODE_MAGIC`: Magic number used to identify a network (overrides network-based magic)
+
+Command-line flags:
+
+- `-start-era`: Era to start chain-sync at (genesis, byron, shelley, allegra, mary, alonzo, babbage, conway)
+- `-tip`: Start chain-sync at current chain tip (recommended for fully synced nodes)
+- `-bulk`: Use bulk chain-sync mode with NtN
+- `-range`: Show start/end block of available range
+
+Examples:
+
+Get current tip and sync forward (recommended for production):
+```bash
+go run ./cmd/chain-sync -tip
+```
+
+The script will continuously output blocks as they're synchronized, displaying
+era, slot, block number, and block hash for each block.
+
 ### LocalTxMonitor
 
 This starter kit demonstrates communication with a Cardano Node using the
