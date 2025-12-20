@@ -116,7 +116,7 @@ func convertStructToJSONSafe(v interface{}) interface{} {
 func main() {
 	// Set config defaults
 	cfg := Config{
-		Magic:      764824073, // Preview network default
+		Magic:      0,
 		SocketPath: "/ipc/node.socket",
 	}
 	// Parse environment variables
