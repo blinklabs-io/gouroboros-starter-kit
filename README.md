@@ -48,6 +48,7 @@ protocol and provides examples of multiple Ouroboros mini-protocols.
 
 - BlockFetch
 - ChainSync
+- LocalStateQuery
 - LocalTxMonitor
 - LocalTxSubmission
 - PeerSharing
@@ -197,6 +198,61 @@ go run ./cmd/peer-sharing
 ```
 
 The script will output 10 peer addresses from the Node, then exit.
+
+### State Query
+
+The state-query command allows you to query various state information from a Cardano Node using the Node-to-Client LocalStateQuery protocol. It provides access to chain state, protocol parameters, stake distribution, UTxO information, and more. The code for this example is in a single `main.go` file under `./cmd/state-query`.
+
+The default configuration will communicate over the local UNIX socket mounted at `/ipc/node.socket` via Node-to-Client LocalStateQuery.
+
+Available query types:
+
+**Chain Information:**
+- `current-era`: Get the current era number
+- `tip`: Get the current chain tip (era, epoch, block number, slot, hash)
+- `system-start`: Get the system start time
+- `era-history`: Get the era history information
+
+**Protocol & Configuration:**
+- `protocol-params`: Get current protocol parameters (outputs JSON)
+- `genesis-config`: Get genesis configuration (outputs JSON)
+
+**Stake Information:**
+- `stake-distribution`: Get stake distribution across stake pools
+- `stake-pools`: Get list of all stake pool IDs
+- `pool-params <pool-id> [pool-id...]`: Get parameters for specific stake pools (outputs JSON)
+
+**UTxO Information:**
+- `utxos-by-address <address> [address...]`: Get UTxOs for specific addresses
+- `utxos-by-txin <txid#idx> [txid#idx...]`: Get specific UTxOs by transaction input
+- `utxo-whole-result [limit]`: Get all UTxOs (WARNING: May timeout on large networks)
+
+Examples:
+
+Get current chain tip:
+```bash
+go run ./cmd/state-query tip
+```
+
+Get protocol parameters:
+```bash
+go run ./cmd/state-query protocol-params
+```
+
+Get stake distribution:
+```bash
+go run ./cmd/state-query stake-distribution
+```
+
+Get UTxOs for an address:
+```bash
+go run ./cmd/state-query utxos-by-address addr1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnjhl5zngxg99vgad0ypq92xll
+```
+
+Get pool parameters:
+```bash
+go run ./cmd/state-query pool-params pool1xxxxx...
+```
 
 ### Ping
 

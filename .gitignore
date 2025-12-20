@@ -13,6 +13,7 @@
 /chain-tip
 /peer-sharing
 /tx-monitor
+/state-query
 /chain-sync
 /tx-submission
 
