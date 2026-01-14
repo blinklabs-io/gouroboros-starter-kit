@@ -292,7 +292,8 @@ func main() {
 			fmt.Println("ERROR: No pools specified")
 			os.Exit(1)
 		}
-		var tmpPools = make([]lcommon.PoolId, 0, len(os.Args[2:]))
+
+		tmpPools := make([]lcommon.PoolId, 0, len(os.Args[2:]))
 		for _, pool := range os.Args[2:] {
 			tmpPoolId, err := lcommon.NewPoolIdFromBech32(pool)
 			if err != nil {
@@ -317,7 +318,7 @@ func main() {
 			fmt.Println("ERROR: No addresses specified")
 			os.Exit(1)
 		}
-		var tmpAddrs = make([]lcommon.Address, 0, len(os.Args[2:]))
+		tmpAddrs := make([]lcommon.Address, 0, len(os.Args[2:]))
 		for _, addr := range os.Args[2:] {
 			tmpAddr, err := lcommon.NewAddress(addr)
 			if err != nil {
@@ -349,7 +350,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		var tmpTxIns = make([]lcommon.TransactionInput, 0, len(os.Args[2:]))
+		tmpTxIns := make([]lcommon.TransactionInput, 0, len(os.Args[2:]))
 		for _, txIn := range os.Args[2:] {
 			txInParts := strings.SplitN(txIn, `#`, 2)
 			if len(txInParts) != 2 {
