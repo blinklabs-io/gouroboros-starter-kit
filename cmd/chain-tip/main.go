@@ -25,6 +25,7 @@ import (
 type Config struct {
 	Magic      uint32
 	SocketPath string `split_words:"true"`
+	Address    string
 }
 
 // This code will be executed when run
@@ -47,17 +48,26 @@ func main() {
 			panic(err)
 		}
 	}()
+
+	isNtN := cfg.Address != ""
+	networkType := "unix"
+	address := cfg.SocketPath
+	if isNtN {
+		networkType = "tcp"
+		address = cfg.Address
+	}
+
 	// Configure Ouroboros
 	o, err := ouroboros.NewConnection(
-		ouroboros.WithNetworkMagic(uint32(cfg.Magic)),
+		ouroboros.WithNetworkMagic(cfg.Magic),
 		ouroboros.WithErrorChan(errorChan),
-		ouroboros.WithNodeToNode(false),
+		ouroboros.WithNodeToNode(isNtN),
 	)
 	if err != nil {
 		panic(err)
 	}
 	// Connect to Node socket
-	if err = o.Dial("unix", cfg.SocketPath); err != nil {
+	if err = o.Dial(networkType, address); err != nil {
 		panic(err)
 	}
 	// Get current tip from Node via NtC ChainSync Ouroboros mini-protocol
