@@ -17,10 +17,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math/big"
 
 	models "github.com/blinklabs-io/cardano-models"
 	ouroboros "github.com/blinklabs-io/gouroboros"
 	"github.com/blinklabs-io/gouroboros/ledger"
+	lcommon "github.com/blinklabs-io/gouroboros/ledger/common"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -29,15 +31,6 @@ import (
 type Config struct {
 	Magic      uint32
 	SocketPath string `split_words:"true"`
-}
-
-// Create an Asset type using generics since the ledger code does not expose it
-type Asset[T ledger.MultiAssetTypeOutput | ledger.MultiAssetTypeMint] struct {
-	Name        string `json:"name"`
-	NameHex     string `json:"nameHex"`
-	PolicyId    string `json:"policyId"`
-	Fingerprint string `json:"fingerprint"`
-	Amount      T      `json:"amount"`
 }
 
 // This code will be executed when run
@@ -168,7 +161,7 @@ func main() {
 
 			// Marshal to JSON bytes from ledger.MultiAsset
 			j, _ := output.Assets().MarshalJSON()
-			var assets []Asset[ledger.MultiAssetTypeOutput]
+			var assets []lcommon.MultiAsset[*big.Int]
 			// Unmarshal JSON bytes to list of Assets
 			err := json.Unmarshal(j, &assets)
 			if err != nil {
@@ -179,13 +172,7 @@ func main() {
 				fmt.Printf(
 					" %-20s %s\n",
 					fmt.Sprintf("Output[%d]:", o),
-					fmt.Sprintf(
-						"Asset[%d]: Policy: %s, Name: %s, Amount: %d",
-						a,
-						asset.PolicyId,
-						asset.Name,
-						asset.Amount,
-					),
+					fmt.Sprintf("Asset[%d]: %+v", a, asset),
 				)
 			}
 		}

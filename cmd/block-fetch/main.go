@@ -171,7 +171,7 @@ func main() {
 		if tx.Metadata() != nil {
 			fmt.Printf(
 				"  Metadata: %#v (%x)\n",
-				tx.Metadata().Value(),
+				tx.Metadata().TypeName(),
 				tx.Metadata().Cbor(),
 			)
 		}
