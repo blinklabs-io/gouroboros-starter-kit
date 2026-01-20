@@ -6,16 +6,16 @@ toolchain go1.24.1
 
 require (
 	github.com/blinklabs-io/cardano-models v0.7.0
-	github.com/blinklabs-io/gouroboros v0.148.0
+	github.com/blinklabs-io/gouroboros v0.149.0
 	github.com/fxamacker/cbor/v2 v2.9.0
 	github.com/kelseyhightower/envconfig v1.4.0
 )
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/ProjectZKM/Ziren/crates/go-runtime/zkvm_runtime v0.0.0-20260112020553-64c30dda3cfd // indirect
+	github.com/ProjectZKM/Ziren/crates/go-runtime/zkvm_runtime v0.0.0-20260120135015-58f41aaaee16 // indirect
 	github.com/bits-and-blooms/bitset v1.24.4 // indirect
-	github.com/blinklabs-io/plutigo v0.0.18 // indirect
+	github.com/blinklabs-io/plutigo v0.0.21 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.6 // indirect
 	github.com/btcsuite/btcd/btcutil v1.1.6 // indirect
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.1.0 // indirect
