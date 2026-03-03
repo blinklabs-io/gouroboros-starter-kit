@@ -24,13 +24,17 @@ jobs:
           if [ -z "$ts" ] || [ "$ts" = "null" ]; then
             d=$(date -u +%F)
           else
-            d=$(date -u -d "$ts" +%F)
+            d=$(date -u -d "$ts" +%F 2>/dev/null)
+            if [ -z "$d" ]; then
+              d=$(date -u +%F)
+            fi
           fi
           echo "date=$d" >> "$GITHUB_OUTPUT"
           echo "Closed date -> $d"
 
       # Update the "Closed Date" field on that project item
       - name: Update Closed Date field
+        continue-on-error: true
         uses: nipe0324/update-project-v2-item-field@c4af58452d1c5a788c1ea4f20e073fa722ec4a6b
         with:
           project-url: ${{ env.PROJECT_URL }}
